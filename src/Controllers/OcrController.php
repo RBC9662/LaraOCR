@@ -18,9 +18,11 @@ class OcrController extends Controller
     public function readImage(){
         $image = request('image');
         if(isset($image) && $image->getPathName()){
+            $path = $image->storeAs('number-plate', time(), 'public');
             $ocr = app()->make(OcrAbstract::class);
             $parsedText = $ocr->scan($image->getPathName());
-            return view('lara_ocr.parsed_text', compact('parsedText'));
+            $image = asset('storage/'.$path);
+            return view('lara_ocr.parsed_text', compact('parsedText', 'image'));
         }
     }
 
